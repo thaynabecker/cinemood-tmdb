@@ -8,6 +8,7 @@ const router = useRouter();
 
 const movies = ref([]);
 
+
 const emojiGenres = [
   { emoji: '😍', name: 'Romance', id: 10749 },
   { emoji: '😂', name: 'Comédia', id: 35 },
