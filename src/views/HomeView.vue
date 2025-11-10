@@ -5,10 +5,10 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const genres = ref([]);
+
 const movies = ref([]);
 
-// Emojis associados a gêneros populares
+
 const emojiGenres = [
   { emoji: '😍', name: 'Romance', id: 10749 },
   { emoji: '😂', name: 'Comédia', id: 35 },
@@ -18,13 +18,11 @@ const emojiGenres = [
   { emoji: '⚔️', name: 'Ação', id: 28 },
 ];
 
-// Carregar filmes populares
 onMounted(async () => {
   const response = await api.get('movie/popular?language=pt-BR');
   movies.value = response.data.results;
 });
 
-// Redireciona ao clicar no emoji
 const goToGenre = (genreId) => {
   router.push({ name: 'Filmes', query: { genre: genreId } });
 };
