@@ -7,30 +7,52 @@ const featuredMovie = ref(null)
 const cast = ref([])
 const trailer = ref(null)
 
+// =====================================================
+//  FUNÇÃO PARA TROCAR O FILME EM DESTAQUE
+// =====================================================
+async function selectMovie(movie) {
+  featuredMovie.value = movie
+
+  const movieId = movie.id
+
+  const [credits, videos] = await Promise.all([
+    api.get(`movie/${movieId}/credits`, {
+      params: { language: 'pt-BR' }
+    }),
+    api.get(`movie/${movieId}/videos`, {
+      params: { language: 'pt-BR' }
+    })
+  ])
+
+  cast.value = credits.data.cast.slice(0, 5)
+  trailer.value = videos.data.results.find(v => v.type === 'Trailer')
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  })
+}
+
+// =====================================================
+//  BUSCA INICIAL – SOMENTE ROMANCE DO TMDB
+// =====================================================
 onMounted(async () => {
   try {
-    // Busca filmes de romance
     const response = await api.get('discover/movie', {
       params: {
-        with_genres: 10749, // romance
+        with_genres: 10749,   // SOMENTE ROMANCE
+        sort_by: 'popularity.desc',
+        include_adult: false,
         language: 'pt-BR',
         page: 1,
       },
     })
+
     romanceMovies.value = response.data.results
     featuredMovie.value = romanceMovies.value[0]
 
-    // Busca detalhes do filme principal
     if (featuredMovie.value) {
-      const movieId = featuredMovie.value.id
-
-      const [credits, videos] = await Promise.all([
-        api.get(`movie/${movieId}/credits`, { params: { language: 'pt-BR' } }),
-        api.get(`movie/${movieId}/videos`, { params: { language: 'pt-BR' } }),
-      ])
-
-      cast.value = credits.data.cast.slice(0, 5)
-      trailer.value = videos.data.results.find(v => v.type === 'Trailer')
+      await selectMovie(featuredMovie.value)
     }
 
     createHearts()
@@ -39,6 +61,9 @@ onMounted(async () => {
   }
 })
 
+// =====================================================
+//  CORAÇÕES ANIMADOS
+// =====================================================
 function createHearts() {
   const container = document.querySelector('.hearts')
   if (!container) return
@@ -56,10 +81,14 @@ function createHearts() {
 }
 </script>
 
+
 <template>
   <section class="romance">
     <div class="hearts"></div>
 
+    <!-- ============================= -->
+    <!--     FILME EM DESTAQUE          -->
+    <!-- ============================= -->
     <main v-if="featuredMovie" class="featured">
       <img
         class="featured-bg"
@@ -75,6 +104,9 @@ function createHearts() {
       </div>
     </main>
 
+    <!-- ============================= -->
+    <!--        TRAILER + CAST          -->
+    <!-- ============================= -->
     <section v-if="featuredMovie" class="details">
       <div class="trailer" v-if="trailer">
         <iframe
@@ -102,10 +134,19 @@ function createHearts() {
       </div>
     </section>
 
+    <!-- ============================= -->
+    <!--   LISTA DE FILMES RECOMENDADOS -->
+    <!-- ============================= -->
     <section class="movie-section">
       <h2>Ver mais filmes recomendados</h2>
+
       <div class="movie-list">
-        <div v-for="movie in romanceMovies" :key="movie.id" class="movie-card">
+        <div
+          v-for="movie in romanceMovies"
+          :key="movie.id"
+          class="movie-card"
+          @click="selectMovie(movie)"
+        >
           <img
             :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`"
             :alt="movie.title"
@@ -127,12 +168,14 @@ function createHearts() {
   color: #fff;
 }
 
+/* ============================= */
+/*   FILME EM DESTAQUE            */
+/* ============================= */
 .featured {
   position: relative;
   height: 70vh;
   display: flex;
   align-items: flex-end;
-  justify-content: start;
   padding: 3rem;
 }
 
@@ -142,7 +185,7 @@ function createHearts() {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: brightness(0.5);
+  filter: brightness(0.55);
   border-radius: 0 0 2rem 2rem;
 }
 
@@ -176,6 +219,9 @@ function createHearts() {
   color: #ffd6e9;
 }
 
+/* ============================= */
+/*  TRAILER + ELENCO              */
+/* ============================= */
 .details {
   display: flex;
   flex-wrap: wrap;
@@ -228,6 +274,9 @@ function createHearts() {
   color: #b73f7e;
 }
 
+/* ============================= */
+/*   FILMES RECOMENDADOS         */
+/* ============================= */
 .movie-section {
   padding: 1.5rem 3rem 4rem;
   text-align: center;
@@ -242,7 +291,6 @@ function createHearts() {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 0.8rem;
-  justify-items: center;
 }
 
 .movie-card {
@@ -250,6 +298,7 @@ function createHearts() {
   border-radius: 0.8rem;
   overflow: hidden;
   width: 150px;
+  cursor: pointer;
   transition: 0.3s;
 }
 
@@ -270,7 +319,9 @@ function createHearts() {
   text-align: center;
 }
 
-/* corações animados */
+/* ============================= */
+/*   CORAÇÕES CAINDO             */
+/* ============================= */
 .hearts {
   position: absolute;
   inset: 0;
