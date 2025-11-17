@@ -31,8 +31,8 @@ const goToGenre = (genreId) => {
 <template>
   <section class="home">
     <div class="intro">
-      <h1 class="title">🎬 Bem-vindo(a) ao <span class="cinemood">CineMood</span>!</h1>
-      <p class="subtitle">Escolha um tema e descubra o clima do seu filme 😍</p>
+      <h1 class="title"> Bem-vindo(a) ao <span class="cinemood">CineMood</span>!</h1>
+      <p class="subtitle">Escolha um tema e descubra o clima do seu filme </p>
     </div>
 
     <div class="emoji-section">
@@ -47,7 +47,7 @@ const goToGenre = (genreId) => {
       </div>
     </div>
 
-    <h2 class="movie-section-title">🔥 Filmes Populares</h2>
+    <h2 class="movie-section-title">Filmes Populares</h2>
     <div class="movie-list">
       <div v-for="movie in movies" :key="movie.id" class="movie-card">
         <img

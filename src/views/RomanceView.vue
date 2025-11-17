@@ -1,15 +1,13 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import api from '@/plugins/axios'
+import FooterComponent from '@/components/FooterComponent.vue'
 
 const romanceMovies = ref([])
 const featuredMovie = ref(null)
 const cast = ref([])
 const trailer = ref(null)
 
-// =====================================================
-//  FUNÇÃO PARA TROCAR O FILME EM DESTAQUE
-// =====================================================
 async function selectMovie(movie) {
   featuredMovie.value = movie
 
@@ -32,38 +30,38 @@ async function selectMovie(movie) {
     behavior: 'smooth',
   })
 }
-
-// =====================================================
-//  BUSCA INICIAL – SOMENTE ROMANCE DO TMDB
-// =====================================================
 onMounted(async () => {
   try {
     const response = await api.get('discover/movie', {
       params: {
-        with_genres: 10749,   // SOMENTE ROMANCE
-        sort_by: 'popularity.desc',
-        include_adult: false,
+        with_genres: 10749,             // romance
+        sort_by: 'popularity.desc',     // filmes conhecidos primeiro
+        'vote_count.gte': 700,          // +200 avaliações (AGORA FUNCIONA)
+        include_adult: false,           // remove +18
+        include_video: false,
         language: 'pt-BR',
         page: 1,
       },
-    })
+    });
 
-    romanceMovies.value = response.data.results
-    featuredMovie.value = romanceMovies.value[0]
+    romanceMovies.value = response.data.results.filter(
+      (m) => m.poster_path
+    );
+
+    featuredMovie.value = romanceMovies.value[0];
 
     if (featuredMovie.value) {
-      await selectMovie(featuredMovie.value)
+      await selectMovie(featuredMovie.value);
     }
 
-    createHearts()
+    createHearts();
   } catch (error) {
-    console.error('Erro ao buscar filmes de romance:', error)
+    console.error('Erro ao buscar filmes de romance:', error);
   }
-})
+});
 
-// =====================================================
-//  CORAÇÕES ANIMADOS
-// =====================================================
+
+
 function createHearts() {
   const container = document.querySelector('.hearts')
   if (!container) return
@@ -86,9 +84,7 @@ function createHearts() {
   <section class="romance">
     <div class="hearts"></div>
 
-    <!-- ============================= -->
-    <!--     FILME EM DESTAQUE          -->
-    <!-- ============================= -->
+
     <main v-if="featuredMovie" class="featured">
       <img
         class="featured-bg"
@@ -104,9 +100,6 @@ function createHearts() {
       </div>
     </main>
 
-    <!-- ============================= -->
-    <!--        TRAILER + CAST          -->
-    <!-- ============================= -->
     <section v-if="featuredMovie" class="details">
       <div class="trailer" v-if="trailer">
         <iframe
@@ -117,7 +110,7 @@ function createHearts() {
           allowfullscreen
         ></iframe>
       </div>
-
+      <div class="romance-gradient-bar"></div>
       <div class="cast" v-if="cast.length">
         <h3>Elenco principal</h3>
         <div class="cast-list">
@@ -134,9 +127,7 @@ function createHearts() {
       </div>
     </section>
 
-    <!-- ============================= -->
-    <!--   LISTA DE FILMES RECOMENDADOS -->
-    <!-- ============================= -->
+
     <section class="movie-section">
       <h2>Ver mais filmes recomendados</h2>
 
@@ -156,11 +147,22 @@ function createHearts() {
       </div>
     </section>
   </section>
+  <section>
+    <footer>
+      <FooterComponent />
+    </footer>
+  </section>
 </template>
 
 <style scoped>
 .romance {
-  background: linear-gradient(180deg, #ffb3d1 0%, #fdd6eb 40%, #fff0f7 100%);
+  background: linear-gradient(
+    180deg,
+    #dfcad2 10%,
+    #d4689e 30%,
+    #cf3576 60%,
+    #0f0f1b 100%
+  );
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
@@ -168,9 +170,7 @@ function createHearts() {
   color: #fff;
 }
 
-/* ============================= */
-/*   FILME EM DESTAQUE            */
-/* ============================= */
+
 .featured {
   position: relative;
   height: 70vh;
@@ -228,6 +228,9 @@ function createHearts() {
   justify-content: center;
   gap: 2rem;
   padding: 2rem 3rem;
+  background-color: #6b0035;
+  margin: 2vw;
+  border-radius: 2vw;
 }
 
 .trailer {
@@ -243,7 +246,7 @@ function createHearts() {
 }
 
 .cast h3 {
-  color: #6b0035;
+  color: #ffffff;
   margin-bottom: 1rem;
 }
 
@@ -266,12 +269,12 @@ function createHearts() {
 .cast-name {
   font-weight: 600;
   font-size: 0.9rem;
-  color: #6b0035;
+  color: #ffffff;
 }
 
 .cast-role {
   font-size: 0.8rem;
-  color: #b73f7e;
+  color: #ffffff;
 }
 
 /* ============================= */
