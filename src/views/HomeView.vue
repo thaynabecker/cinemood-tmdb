@@ -8,14 +8,12 @@ const router = useRouter();
 
 const movies = ref([]);
 
-
 const emojiGenres = [
-  { emoji: '😍', name: 'Romance', id: 10749 },
-  { emoji: '😂', name: 'Comédia', id: 35 },
-  { emoji: '😱', name: 'Terror', id: 27 },
-  { emoji: '🚀', name: 'Ficção Científica', id: 878 },
-  { emoji: '🕵️‍♀️', name: 'Mistério', id: 9648 },
-  { emoji: '⚔️', name: 'Ação', id: 28 },
+  { image: '/img/emojiromance.png', name: 'Romance', id: 1 },
+  { image: '/img/emojicomedia.png', name: 'Comédia', id: 2 },
+  { image: '/img/emojiterror.png', name: 'Terror', id: 3 },
+  { image: '/img/emojificcao.png', name: 'Ficção Científica', id: 4 },
+  { image: '/img/emojimisterio.png', name: 'Mistério', id: 5 },
 ];
 
 onMounted(async () => {
@@ -30,30 +28,23 @@ const goToGenre = (genreId) => {
 
 <template>
   <section class="home">
-    <div class="intro">
-      <h1 class="title">🎬 Bem-vindo(a) ao <span class="cinemood">CineMood</span>!</h1>
-      <p class="subtitle">Escolha um tema e descubra o clima do seu filme 😍</p>
+    <div class="inicio">
+      <img src="/img/cinemood.png" alt="logo">
+      <h1 class="title">Recomendações cinematográficas baseadas no seu humor.</h1>
     </div>
 
     <div class="emoji-section">
-      <div
-        v-for="item in emojiGenres"
-        :key="item.id"
-        class="emoji-card"
-        @click="goToGenre(item.id)"
-      >
-        <span class="emoji">{{ item.emoji }}</span>
+      <div v-for="item in emojiGenres" :key="item.id" class="emoji-card" @click="goToGenre(item.id)">
+        <img :src="item.image" class="emoji" />
         <p>{{ item.name }}</p>
       </div>
     </div>
-
-    <h2 class="movie-section-title">🔥 Filmes Populares</h2>
+    <h2 class="botao-emocoes">COMBINAR EMOÇÕES</h2>
+    
     <div class="movie-list">
+      <h2 class="movie-section-title">Filmes Populares</h2>
       <div v-for="movie in movies" :key="movie.id" class="movie-card">
-        <img
-          :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`"
-          :alt="movie.title"
-        />
+        <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" />
         <p class="movie-title">{{ movie.title }}</p>
       </div>
     </div>
@@ -67,13 +58,16 @@ const goToGenre = (genreId) => {
   color: #fff;
   padding: 2rem;
 }
-
+.inicio {
+  justify-content: baseline;
+  display: flex;
+}
 .title {
   font-size: 2rem;
 }
 
 .cinemood {
-  color: #e83e8c;
+  color: #52fff6;
 }
 
 .subtitle {
@@ -97,17 +91,28 @@ const goToGenre = (genreId) => {
   cursor: pointer;
   width: 6rem;
   transition: 0.3s;
-  box-shadow: 0 0 10px #e83e8c50;
+  box-shadow: 0 0 10px #24b1bb60;
 }
 
 .emoji-card:hover {
   transform: scale(1.1);
-  background-color: #e83e8c;
+  background-color: #59d3cd;
   color: #fff;
 }
 
 .emoji {
-  font-size: 2rem;
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+.botao-emocoes {
+  margin: 4vw 40vw 4vw 40vw;
+  padding: 0.5vw 0 0.5vw 0;
+  background-color: #52fff6;
+  border-radius: 100vw;
+  color: black;
+  font-size: medium;
+  font-weight: bolder;
 }
 
 .movie-list {
@@ -115,6 +120,8 @@ const goToGenre = (genreId) => {
   flex-wrap: wrap;
   justify-content: center;
   gap: 1rem;
+  border-radius: 100px;
+  background-color: #24b1bb60;
 }
 
 .movie-card {
@@ -127,7 +134,7 @@ const goToGenre = (genreId) => {
 
 .movie-card:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 1rem #e83e8c60;
+  box-shadow: 0 0 1rem #24b1bb60;
 }
 
 .movie-card img {

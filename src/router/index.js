@@ -16,6 +16,42 @@ const routes = [
     name: 'TV',
     component: () => import('../views/TvView.vue'),
   },
+   {
+    path: '/romance',
+    name: 'Romance',
+    component: () => import('../views/RomanceView.vue'),
+  },
+  {
+    path: '/terror',
+    name: 'Terror',
+    component: () => import('../views/TerrorView.vue'),
+  },
+  {
+    path: '/misterio',
+    name: 'Misterio',
+    component: () => import('../views/MisterioView.vue'),
+  },
+  {
+    path: '/drama',
+    name: 'Drama',
+    component: () => import('../views/DramaView.vue'),
+  },
+  {
+    path: '/comedia',
+    name: 'Comedia',
+    component: () => import('../views/ComediaView.vue'),
+  },
+  {
+    path: '/ficcao',
+    name: 'Ficcao',
+    component: () => import('../views/FiccaoView.vue'),
+  },
+
+
+
+
+
+
 ];
 
 const router = createRouter({
