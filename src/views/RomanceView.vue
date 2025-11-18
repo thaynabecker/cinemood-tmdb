@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import api from '@/plugins/axios'
 import FooterComponent from '@/components/FooterComponent.vue'
+import HeaderRComponent from '@/components/HeaderRComponent.vue'
 
 const romanceMovies = ref([])
 const featuredMovie = ref(null)
@@ -81,6 +82,11 @@ function createHearts() {
 
 
 <template>
+  <section>
+    <header>
+      <HeaderRComponent />
+    </header>
+  </section>
   <section class="romance">
     <div class="hearts"></div>
 
@@ -125,6 +131,7 @@ function createHearts() {
           </div>
         </div>
       </div>
+      
     </section>
 
 
