@@ -30,7 +30,7 @@ const goToGenre = (genreId) => {
   <section class="home">
     <div class="inicio">
       <img src="/img/cinemood.png" alt="logo">
-      <h1 class="title">Recomendações cinematográficas baseadas no seu humor.</h1>
+      <h1 class="title">Recomendações <br></br>cinematográficas <br>baseadas no seu <br>humor.</h1>
     </div>
 
     <div class="emoji-section">
@@ -39,8 +39,8 @@ const goToGenre = (genreId) => {
         <p>{{ item.name }}</p>
       </div>
     </div>
-    <h2 class="botao-emocoes">COMBINAR EMOÇÕES</h2>
-    
+    <button class="botao-emocoes">COMBINAR EMOÇÕES</button>
+
     <div class="movie-list">
       <h2 class="movie-section-title">Filmes Populares</h2>
       <div v-for="movie in movies" :key="movie.id" class="movie-card">
@@ -54,14 +54,22 @@ const goToGenre = (genreId) => {
 <style scoped>
 .home {
   text-align: center;
-  background-color: #0f0f1b;
+  background-color: #000000;
   color: #fff;
   padding: 2rem;
 }
 .inicio {
-  justify-content: baseline;
+  margin: 0 0vw 0 25vw;
+  padding: 0 3vw 0 0;
   display: flex;
+  align-items: center; /* deixa eles alinhadinhos na vertical */
+  gap: 1rem; /* dá espaço entre a imagem e o h1 */
 }
+.inicio img {
+  width: 25vw;  /* coloca o tamanho que quiser */
+  height: auto;
+}
+
 .title {
   font-size: 2rem;
 }
@@ -81,30 +89,52 @@ const goToGenre = (genreId) => {
   justify-content: center;
   flex-wrap: wrap;
   gap: 2rem;
-  margin: 2rem 0;
+  margin: 2rem 0 0 0;
 }
 
 .emoji-card {
-  background-color: #1e1e2f;
-  border-radius: 1rem;
-  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   cursor: pointer;
-  width: 6rem;
-  transition: 0.3s;
-  box-shadow: 0 0 10px #24b1bb60;
+  transition: 0.3s ease;
 }
 
-.emoji-card:hover {
-  transform: scale(1.1);
-  background-color: #59d3cd;
-  color: #fff;
+/* remove bordas, fundo, tudo */
+.emoji-card {
+  background: none;
+  box-shadow: none;
+  padding: 0;
 }
 
+/* só o emoji aparece inicialmente */
+.emoji-card p {
+  margin-top: 0.5rem;
+  color: #b5b5b5; /* cinza */
+  opacity: 0;     /* começa invisível */
+  transition: 0.3s ease;
+}
+
+/* o emoji */
 .emoji {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
+  width: 70px;
+  height: 70px;
+  transition: 0.3s ease;
+  border-radius: 50%;
 }
+
+/* quando passa o mouse */
+.emoji-card:hover .emoji {
+  transform: scale(1.15);
+  box-shadow: 0 0 20px 8px #52fff6; /* glow verde água suave */
+  background: radial-gradient(circle, #52fff620 0%, #00000000 70%);
+}
+
+/* aparece a escrita só no hover */
+.emoji-card:hover p {
+  opacity: 1;
+}
+
 .botao-emocoes {
   margin: 4vw 40vw 4vw 40vw;
   padding: 0.5vw 0 0.5vw 0;
