@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import api from '@/plugins/axios';
 import { useRouter } from 'vue-router';
+import HeaderInicialComponent from '@/components/HeaderInicialComponent.vue';
 
 const router = useRouter();
 
@@ -29,6 +30,11 @@ const goToGenre = (genreId) => {
 </script>
 
 <template>
+  <section>
+    <header>
+      <HeaderInicialComponent />
+    </header>
+  </section>
   <section class="home">
     <div class="intro">
       <h1 class="title"> Bem-vindo(a) ao <span class="cinemood">CineMood</span>!</h1>
