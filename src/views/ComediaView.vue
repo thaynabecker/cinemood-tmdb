@@ -165,7 +165,10 @@ onMounted(async () => {
 }
 
 .trailer {
-  margin-bottom: 20px;
+  flex: 1 1 450px;
+  box-shadow: 0 0 20px #e83e8c80;
+  overflow: hidden;
+  border-radius: 0.8rem;
 }
 
 /* Barra de gradiente – versão comédia */

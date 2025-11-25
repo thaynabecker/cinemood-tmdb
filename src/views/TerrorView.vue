@@ -162,9 +162,6 @@ onMounted(async () => {
   filter: brightness(0.35);
 }
 
-/* overlay com sangue falso (CSS) */
-
-
 /* info do destaque */
 .featured-info {
   position: relative;

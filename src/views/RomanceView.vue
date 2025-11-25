@@ -240,14 +240,13 @@ function createHearts() {
   border-radius: 2vw;
 }
 
+
 .trailer {
   flex: 1 1 450px;
-  max-width: 550px;
-  border-radius: 1rem;
-  overflow: hidden;
   box-shadow: 0 0 20px #e83e8c80;
+  overflow: hidden;
+  border-radius: 0.8rem;
 }
-
 .cast {
   flex: 1 1 450px;
 }
