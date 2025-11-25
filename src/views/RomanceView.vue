@@ -131,7 +131,7 @@ function createHearts() {
           </div>
         </div>
       </div>
-      
+
     </section>
 
 
@@ -312,10 +312,7 @@ function createHearts() {
   transition: 0.3s;
 }
 
-.movie-card:hover {
-  transform: scale(1.06);
-  box-shadow: 0 0 1rem #e83e8c60;
-}
+
 
 .movie-card img {
   width: 100%;

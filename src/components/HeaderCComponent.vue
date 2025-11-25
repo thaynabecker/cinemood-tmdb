@@ -1,9 +1,11 @@
 <template>
   <head>
+    <!-- Fonte Mountains of Christmas -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&display=swap"
       rel="stylesheet"
     />
+
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=search"
@@ -11,27 +13,26 @@
   </head>
 
   <header class="header">
-    <div class="logo">Romance</div>
+    <div class="logo">Comédia</div>
 
-   <nav class="nav">
-  <router-link to="/" class="nav-item" active-class="active">HOME</router-link>
-  <router-link to="/tv" class="nav-item" active-class="active">TV SHOW</router-link>
-  <router-link to="/filmes" class="nav-item" active-class="active">MOVIES</router-link>
-  <router-link to="/new" class="nav-item" active-class="active">NEW</router-link>
-</nav>
+    <nav class="nav">
+      <router-link to="/" class="nav-item" active-class="active">HOME</router-link>
+      <router-link to="/tv" class="nav-item" active-class="active">TV SHOW</router-link>
+      <router-link to="/filmes" class="nav-item" active-class="active">MOVIES</router-link>
+      <router-link to="/new" class="nav-item" active-class="active">NEW</router-link>
+    </nav>
 
     <div class="actions">
       <div class="search-box">
         <input type="text" placeholder="SEARCH" />
         <i class="icon-search"><span class="material-symbols-outlined"> search </span></i>
       </div>
-      <i class="icon"></i>
-      <i class="icon"></i>
 
       <img class="user-avatar" src="https://i.pravatar.cc/40" alt="User" />
     </div>
   </header>
 </template>
+
 <style>
 .header {
   width: 100%;
@@ -39,12 +40,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(90deg, #000000, #a00078);
+  background: linear-gradient(90deg, #000000, #ffd900ce);
   color: white;
   font-family: 'Poppins', sans-serif;
 }
+
 .logo {
-  font-family: 'Parisienne', cursive;
+  font-family: 'Mountains of Christmas', cursive;
   font-size: 38px;
   font-weight: 400;
   letter-spacing: 1.5px;
@@ -99,18 +101,6 @@
   right: 10px;
   top: 6px;
   pointer-events: none;
-}
-
-/* ÍCONES */
-.icon {
-  font-size: 18px;
-  cursor: pointer;
-  opacity: 0.85;
-  transition: 0.2s;
-}
-
-.icon:hover {
-  opacity: 1;
 }
 
 /* AVATAR */
