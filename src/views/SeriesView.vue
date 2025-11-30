@@ -6,19 +6,19 @@ import SideBar from '@/components/SideBar.vue'
 import PopularCarousel from '@/components/PopularCarousel.vue'
 import FooterComponent from '@/components/FooterComponent.vue'
 
-const movies = ref([])
-const selectedMovie = ref(null)
+const series = ref([]) // séries
+const selectedSeries = ref(null)
 
 /* ---------------- CARROSSEL ---------------- */
 const currentIndex = ref(0)
 const itemsPerPage = 5
 
-const visibleMovies = computed(() => {
-  return movies.value.slice(currentIndex.value, currentIndex.value + itemsPerPage)
+const visibleSeries = computed(() => {
+  return series.value.slice(currentIndex.value, currentIndex.value + itemsPerPage)
 })
 
 const canGoNext = computed(() => {
-  return currentIndex.value + itemsPerPage < movies.value.length
+  return currentIndex.value + itemsPerPage < series.value.length
 })
 
 const canGoPrev = computed(() => {
@@ -35,101 +35,91 @@ function prev() {
 
 /* ------------------------------------------- */
 
-async function fetchMovies() {
+async function fetchSeries() {
   try {
-    const res = await api.get("movie/popular?language=pt-BR&page=1")
-    movies.value = res.data.results || []
+    const res = await api.get("tv/popular?language=pt-BR&page=1")
+    series.value = res.data.results || []
 
-    if (movies.value.length && !selectedMovie.value) {
-      selectedMovie.value = movies.value[0]
+    if (series.value.length && !selectedSeries.value) {
+      selectedSeries.value = series.value[0]
     }
 
   } catch (error) {
-    console.error("Erro ao carregar filmes:", error)
+    console.error("Erro ao carregar séries:", error)
   }
 }
 
-function selectMovie(movie) {
-  selectedMovie.value = movie
+function selectSeries(seriesItem) {
+  selectedSeries.value = seriesItem
 }
 
-onMounted(() => fetchMovies())
-
-function selectMovieAndScroll(movie) {
-  selectedMovie.value = movie
-  // Scrolla pro topo da página
+function selectSeriesAndScroll(seriesItem) {
+  selectedSeries.value = seriesItem
   window.scrollTo({
     top: 0,
     behavior: 'smooth'
   })
 }
 const selectedGenres = computed(() => {
-  if (!selectedMovie.value) return ''
+  if (!selectedSeries.value) return ''
   const genresMap = {
     28:'Ação',12:'Aventura',16:'Animação',35:'Comédia',80:'Crime',
     99:'Documentário',18:'Drama',10751:'Família',14:'Fantasia',36:'História',
     27:'Terror',10402:'Música',9648:'Mistério',10749:'Romance',878:'Ficção Científica',
     10770:'Cinema TV',53:'Thriller',10752:'Guerra',37:'Faroeste'
   }
-  return (selectedMovie.value.genre_ids || []).map(id => genresMap[id]).join(', ')
+  return (selectedSeries.value.genre_ids || []).map(id => genresMap[id]).join(', ')
 })
 
 const formattedDate = computed(() => {
-  if (!selectedMovie.value) return ''
-  const dateStr = selectedMovie.value.release_date || selectedMovie.value.first_air_date
+  if (!selectedSeries.value) return ''
+  const dateStr = selectedSeries.value.release_date || selectedSeries.value.first_air_date
   if (!dateStr) return ''
   const date = new Date(dateStr)
   return new Intl.DateTimeFormat('pt-BR').format(date)
 })
+onMounted(() => fetchSeries())
 </script>
 
 <template>
   <div class="app">
-    <nav>
-      <NavBar />
-    </nav>
+    <nav><NavBar /></nav>
     <SideBar />
-    <!-- BANNER INICIAL OU DO FILME CLICADO -->
-    <div class="banner" v-if="selectedMovie" :style="{ backgroundImage: 'url(https://image.tmdb.org/t/p/original' + selectedMovie.backdrop_path + ')' }">
+
+    <!-- BANNER -->
+    <div class="banner" v-if="selectedSeries" :style="{
+      backgroundImage: 'url(https://image.tmdb.org/t/p/original' + selectedSeries.backdrop_path + ')'
+    }">
       <div class="banner-content">
-        <h1>{{ selectedMovie.title || selectedMovie.name }}</h1>
-        <p>{{ selectedMovie.overview }}</p>
+        <h1>{{ selectedSeries.title || selectedSeries.name }}</h1>
+        <p>{{ selectedSeries.overview }}</p>
         <p>{{ formattedDate }} - {{ selectedGenres }}</p>
       </div>
     </div>
-    <!--FILMES-->
-    <div class="list-movies">
-      <PopularCarousel type="movies" /> <!-- Top 10 Filmes -->
-    </div>
-    <!-- CARROSSEL -->
-    <div class="cards-wrapper">
-
-      <!-- LISTA CARDS -->
-      <div class="all-movies">
-        <h2>TODOS OS FILMES</h2>
-        <div class="movie-grid">
-          <div v-for="movie in movies.slice(0, 30)" :key="movie.id" class="grid-card"
-            @click="selectMovieAndScroll(movie)">
-            <img :src="'https://image.tmdb.org/t/p/w300' + movie.poster_path" />
-            <p>{{ movie.title }}</p>
-          </div>
+    <PopularCarousel type="series" />
+    <!-- GRID DE SÉRIES -->
+    <div class="all-movies">
+      <h2>TODAS AS SÉRIES</h2>
+      <div class="movie-grid">
+        <div v-for="seriesItem in series.slice(0,30)" :key="seriesItem.id" class="grid-card"
+          @click="selectSeriesAndScroll(seriesItem)">
+          <img :src="'https://image.tmdb.org/t/p/w300' + seriesItem.poster_path" />
+          <p>{{ seriesItem.name }}</p>
         </div>
       </div>
-
     </div>
+
     <FooterComponent />
   </div>
-
 </template>
 
 <style scoped>
+/* mantém exatamente os mesmos estilos do seu código atual, só aplicando para séries */
 .app {
   color: white;
   background: #0a0a0a;
   min-height: 100vh;
 }
-
-/* ---------------- BANNER ---------------- */
 
 .banner {
   height: 100vh;
@@ -177,10 +167,9 @@ const formattedDate = computed(() => {
   color: #ffffff;
 }
 
-/* Grid com 5 por linha */
 .movie-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr); /* sempre 5 colunas */
+  grid-template-columns: repeat(5, 1fr);
   gap: 40px;
   justify-items: center;
 }
@@ -201,7 +190,6 @@ const formattedDate = computed(() => {
   display: block;
 }
 
-/* Título oculto por padrão */
 .grid-card p {
   position: absolute;
   bottom: 0;
@@ -209,25 +197,22 @@ const formattedDate = computed(() => {
   width: 100%;
   margin: 0;
   padding: 10px;
-  background: rgba(0,0,0,0.5); /* transparente escuro */
+  background: rgba(0,0,0,0.5);
   color: white;
   text-align: center;
   opacity: 0;
   transition: opacity 0.2s;
 }
 
-/* Ao passar o mouse, mostra o título */
 .grid-card:hover p {
   opacity: 1;
 }
 
-/* Hover do card */
 .grid-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(0,0,0,0.5);
 }
 
-/* Responsivo: 3 por linha em telas menores */
 @media (max-width: 1200px) {
   .movie-grid {
     grid-template-columns: repeat(3, 1fr);

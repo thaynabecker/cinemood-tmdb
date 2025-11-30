@@ -1,65 +1,77 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import api from '@/plugins/axios'
-
+import NavBar from '@/components/NavBar.vue'
+import SideBar from '@/components/SideBar.vue'
+import FooterComponent from '@/components/FooterComponent.vue'
 const romanceMovies = ref([])
 const featuredMovie = ref(null)
 const cast = ref([])
 const trailer = ref(null)
 
+async function selectMovie(movie) {
+  featuredMovie.value = movie
+
+  const movieId = movie.id
+
+  const [credits, videos] = await Promise.all([
+    api.get(`movie/${movieId}/credits`, {
+      params: { language: 'pt-BR' }
+    }),
+    api.get(`movie/${movieId}/videos`, {
+      params: { language: 'pt-BR' }
+    })
+  ])
+
+  cast.value = credits.data.cast.slice(0, 5)
+  trailer.value = videos.data.results.find(v => v.type === 'Trailer')
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  })
+}
 onMounted(async () => {
   try {
-    // Busca filmes de romance
     const response = await api.get('discover/movie', {
       params: {
-        with_genres: 10749, // romance
+        with_genres: 10749,             // romance
+        sort_by: 'popularity.desc',     // filmes conhecidos primeiro
+        'vote_count.gte': 700,          // +200 avaliações (AGORA FUNCIONA)
+        include_adult: false,           // remove +18
+        include_video: false,
         language: 'pt-BR',
         page: 1,
       },
-    })
-    romanceMovies.value = response.data.results
-    featuredMovie.value = romanceMovies.value[0]
+    });
 
-    // Busca detalhes do filme principal
+    romanceMovies.value = response.data.results.filter(
+      (m) => m.poster_path
+    );
+
+    featuredMovie.value = romanceMovies.value[0];
+
     if (featuredMovie.value) {
-      const movieId = featuredMovie.value.id
-
-      const [credits, videos] = await Promise.all([
-        api.get(`movie/${movieId}/credits`, { params: { language: 'pt-BR' } }),
-        api.get(`movie/${movieId}/videos`, { params: { language: 'pt-BR' } }),
-      ])
-
-      cast.value = credits.data.cast.slice(0, 5)
-      trailer.value = videos.data.results.find(v => v.type === 'Trailer')
+      await selectMovie(featuredMovie.value);
     }
 
-    createHearts()
   } catch (error) {
-    console.error('Erro ao buscar filmes de romance:', error)
+    console.error('Erro ao buscar filmes de romance:', error);
   }
-})
+});
 
-function createHearts() {
-  const container = document.querySelector('.hearts')
-  if (!container) return
-
-  for (let i = 0; i < 25; i++) {
-    const heart = document.createElement('span')
-    heart.classList.add('heart')
-    heart.style.left = Math.random() * 100 + 'vw'
-    heart.style.animationDuration = Math.random() * 3 + 2 + 's'
-    container.appendChild(heart)
-    setTimeout(() => heart.remove(), 5000)
-  }
-
-  setInterval(createHearts, 4000)
-}
 </script>
 
 <template>
-  <section class="romance">
-    <div class="hearts"></div>
+  <nav><NavBar /></nav>
+  <SideBar />
 
+  <section class="romance">
+
+    <!-- TITULO -->
+    <h1 class="page-title">Romance</h1>
+
+    <!-- BANNER PRINCIPAL -->
     <main v-if="featuredMovie" class="featured">
       <img
         class="featured-bg"
@@ -75,6 +87,7 @@ function createHearts() {
       </div>
     </main>
 
+    <!-- DETALHES: TRAILER + ELENCO -->
     <section v-if="featuredMovie" class="details">
       <div class="trailer" v-if="trailer">
         <iframe
@@ -85,7 +98,7 @@ function createHearts() {
           allowfullscreen
         ></iframe>
       </div>
-
+      <div class="romance-gradient-bar"></div>
       <div class="cast" v-if="cast.length">
         <h3>Elenco principal</h3>
         <div class="cast-list">
@@ -102,10 +115,15 @@ function createHearts() {
       </div>
     </section>
 
+    <!-- FILMES EM GRID -->
     <section class="movie-section">
-      <h2>Ver mais filmes recomendados</h2>
       <div class="movie-list">
-        <div v-for="movie in romanceMovies" :key="movie.id" class="movie-card">
+        <div
+          v-for="movie in romanceMovies"
+          :key="movie.id"
+          class="movie-card"
+          @click="selectMovie(movie)"
+        >
           <img
             :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`"
             :alt="movie.title"
@@ -115,25 +133,46 @@ function createHearts() {
       </div>
     </section>
   </section>
+
+  <FooterComponent />
 </template>
 
 <style scoped>
 .romance {
-  background: linear-gradient(180deg, #ffb3d1 0%, #fdd6eb 40%, #fff0f7 100%);
+  background: linear-gradient(
+    180deg,
+    #da9cb4 0%,
+    #d4689e 30%,
+    #cf3576 60%,
+    #0f0f1b 100%
+  );
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
   font-family: 'Poppins', sans-serif;
   color: #fff;
+  padding-top: 3rem;
 }
 
+.page-title {
+  font-family: "Herr Von Muellerhoff", cursive;
+  font-weight: 600;
+  text-align: center;
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  color: #ba1d5e;
+}
+
+/* BANNER DIMINUÍDO */
 .featured {
-  position: relative;
-  height: 70vh;
+   position: relative;
+  height: 50vh; /* altura menor */
   display: flex;
   align-items: flex-end;
-  justify-content: start;
-  padding: 3rem;
+  padding: 2rem 3rem;
+  margin: 0 auto 2rem auto; /* centraliza horizontalmente */
+  max-width: 1250px; /* ajusta a largura do banner */
+  border-radius: 1rem;
 }
 
 .featured-bg {
@@ -142,15 +181,15 @@ function createHearts() {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: brightness(0.5);
-  border-radius: 0 0 2rem 2rem;
+  filter: brightness(0.55);
+  border-radius: 1rem;
 }
 
 .overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
-  border-radius: 0 0 2rem 2rem;
+  border-radius: 1rem;
 }
 
 .featured-info {
@@ -160,134 +199,125 @@ function createHearts() {
 }
 
 .featured-title {
-  font-size: 3rem;
+  font-size: 1.6rem; /* menor que 2rem */
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: 0.3rem;
 }
 
 .featured-desc {
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
+  font-size: 0.85rem; /* menor e proporcional */
+  margin-bottom: 0.3rem;
   color: #f3f3f3;
 }
 
 .featured-genre {
   font-weight: 600;
+  font-size: 0.9rem; /* proporcional ao banner menor */
   color: #ffd6e9;
 }
 
-.details {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2rem;
-  padding: 2rem 3rem;
-}
+/* DETALHES */
+.details { 
+  display: flex; 
+  flex-wrap: wrap; 
+  flex: 1 1 300px;
+  justify-content: center; 
+  gap: 2rem; padding: 2rem 3rem; 
+  background-color: #8a0e4c; margin: 2vw; 
+  border-radius: 2vw;
+ } 
 
-.trailer {
-  flex: 1 1 450px;
-  max-width: 550px;
-  border-radius: 1rem;
-  overflow: hidden;
-  box-shadow: 0 0 20px #e83e8c80;
-}
+/* TRAILER */
+  .trailer { 
+  flex: 1 1 450px; 
+  box-shadow: 0 0 20px; 
+  overflow: hidden; 
+  border-radius: 0.8rem;
+  background-color: transparent;
+ }
 
 .cast {
-  flex: 1 1 450px;
-}
-
-.cast h3 {
-  color: #6b0035;
-  margin-bottom: 1rem;
+  flex: 1 1 300px; /* menor largura */
 }
 
 .cast-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 2rem; /* menor gap */
+  justify-content: flex-start; /* alinhamento melhor */
 }
 
 .cast-card {
-  width: 100px;
+  width: 80px; /* menor que 80px */
   text-align: center;
 }
 
 .cast-card img {
   width: 100%;
-  border-radius: 0.5rem;
+  height: 100px; /* define altura fixa proporcional */
+  object-fit: cover;
+  border-radius: 0.4rem;
 }
 
 .cast-name {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: #6b0035;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #fff;
 }
 
 .cast-role {
-  font-size: 0.8rem;
-  color: #b73f7e;
+  font-size: 0.65rem;
+  color: #ddd;
 }
 
+
+/* GRID DE FILMES RETO */
 .movie-section {
   padding: 1.5rem 3rem 4rem;
   text-align: center;
 }
 
-.movie-section h2 {
-  color: #6b0035;
-  margin-bottom: 1rem;
-}
-
 .movie-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 0.8rem;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 40px;
   justify-items: center;
 }
 
 .movie-card {
-  background-color: #2a0f1f;
-  border-radius: 0.8rem;
-  overflow: hidden;
+  position: relative;
   width: 150px;
-  transition: 0.3s;
-}
-
-.movie-card:hover {
-  transform: scale(1.06);
-  box-shadow: 0 0 1rem #e83e8c60;
+  cursor: pointer;
+  overflow: hidden;
 }
 
 .movie-card img {
   width: 100%;
   height: 230px;
   object-fit: cover;
+  display: block;
 }
 
+/* NOME APARECE SÓ NO HOVER */
 .movie-title {
-  padding: 0.5rem;
-  font-size: 0.9rem;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  padding: 5px;
+  background: rgba(0,0,0,0.6);
+  color: white;
   text-align: center;
+  opacity: 0;
+  transition: opacity 0.2s;
 }
 
-/* corações animados */
-.hearts {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
+.movie-card:hover .movie-title {
+  opacity: 1;
 }
 
-.heart {
-  position: absolute;
-  color: #ffb6c1;
-  font-size: 1.2rem;
-  animation: fall 5s linear forwards;
-}
 
-.heart::before {
-  content: '💖';
-}
 
 @keyframes fall {
   0% {
@@ -297,6 +327,14 @@ function createHearts() {
   100% {
     transform: translateY(110vh) scale(0.8);
     opacity: 0;
+  }
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+  .featured {
+    height: 40vh;
+    padding: 1rem 2rem;
   }
 }
 </style>

@@ -13,7 +13,7 @@ header {
   height: 3rem;
   display: flex;
   background-color: black;
-  color: #fff;
+  color: #000000;
   font-size: 1.2rem;
   padding-left: 2rem;
 }
