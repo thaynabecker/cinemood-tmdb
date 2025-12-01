@@ -14,45 +14,19 @@ import FooterComponent from '@/components/FooterComponent.vue'
         </section>
 
         <section class="about-content">
-            <div class="card">
-                <h2>Nossa História</h2>
-                <div class="card-text">
-                <p>
-                    O projeto CineMood surgiu a partir de uma experiência pessoal da equipe: muitas vezes enfrentamos
-                    dificuldades para escolher um filme ou série para assistir, especialmente diante da grande
-                    quantidade de opções disponíveis em plataformas de streaming.
-                    Diante desse problema, a equipe decidiu desenvolver uma solução que tornasse a escolha de filmes
-                    mais rápida, divertida e personalizada, considerando o humor do usuário no momento da decisão.
-                </p>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>O que fazemos</h2>
-                <div class="card-text">
+            <div class="sobre-cinemood">
                 <p>
                     O CineMood é uma plataforma web interativa desenvolvida com o objetivo de ajudar usuários indecisos
                     a escolherem filmes de acordo com o seu humor do momento. Em um mundo com milhões de opções
                     disponíveis em serviços de streaming e catálogos digitais, muitas pessoas passam mais tempo
                     decidindo o que assistir do que, de fato, assistindo algo. Essa indecisão, causada pelo excesso de
-                    opções e pela falta de direcionamento emocional, é conhecida como “paradoxo da escolha” — e é
-                    exatamente esse o problema que o CineMood pretende resolver.
-
+                    opções e pela falta de direcionamento emocional, é exatamente o que o CineMood pretende resolver. <br></br>
+                    O projeto surgiu a partir de uma experiência pessoal da equipe: muitas vezes enfrentamos
+                    dificuldades para escolher um filme ou série para assistir, especialmente diante da grande
+                    quantidade de opções disponíveis em plataformas de streaming.
+                    Diante desse problema, a equipe decidiu desenvolver uma solução que tornasse a escolha de filmes
+                    mais rápida, divertida e personalizada, considerando o humor do usuário no momento da decisão.
                 </p>
-                </div>
-            </div>
-            <div class="card">
-                <h2>Nossa Missão</h2>
-                <div class="card-text">
-                <p>
-                    O objetivo principal do projeto CineMood é criar uma plataforma interativa capaz de recomendar
-                    filmes com base no humor do usuário, proporcionando uma experiência de escolha mais personalizada,
-                    intuitiva e emocional.
-                    Dessa forma, tornar o ato de escolher um filme algo prazeroso, rápido e imersivo, utilizando
-                    tecnologia, design e emoção para criar uma experiência personalizada e interativa para o usuário.
-
-                </p>
-                </div>
             </div>
         </section>
         <section class="team-section">
@@ -101,57 +75,18 @@ import FooterComponent from '@/components/FooterComponent.vue'
 
 .hero h1 {
     font-family: "Train One", system-ui;
-    font-size: 3rem;
+    font-size: 2.2rem;
     color: #24b1bb;
     margin-bottom: 10px;
+    margin: 1vw 2vw 0 0;
 }
 
 .hero p {
-    font-size: 1.2rem;
+    font-size: 1rem;
     opacity: 0.8;
 }
-
-/* CONTENT CARDS */
 .about-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
-    padding: 40px 20px;
-    max-width: 1100px;
-    margin: auto;
-}
-
-.card {
-    background: #111214;
-    padding: 25px;
-    border-radius: 14px;
-    border: 1px solid #1a1d20;
-    box-shadow: 0 0 15px rgba(78, 242, 194, 0.05);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 0 25px rgba(78, 242, 194, 0.2);
-}
-
-.card h2 {
-    color: #24b1bb;
-    margin-bottom: 10px;
-    
-}
-
-.card-text {
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: max-height 0.5s ease, opacity 0.4s ease;
-}
-
-/* Só o card que está em hover expande */
-.card:hover .card-text {
-  max-height: 500px;
-  opacity: 1;
+    margin: 1vw 12vw 1vw 12vw;
 }
 
 /* Section */
@@ -164,7 +99,7 @@ import FooterComponent from '@/components/FooterComponent.vue'
 
 .section-title {
   font-family: "Train One", system-ui;
-  font-size: 3rem;
+  font-size: 2rem;
   color: #24b1bb;
   font-size: 2.3rem;
   margin-bottom: 25px;
@@ -184,8 +119,8 @@ import FooterComponent from '@/components/FooterComponent.vue'
   background: #111214;
   border-radius: 15px;
   border: 1px solid #1a1d20;
-  width: 270px;    
-  height: 270px; 
+  width: 230px;    
+  height: 230px; 
   overflow: hidden;
   cursor: pointer;
   box-shadow: 0 0 15px rgba(78, 242, 194, 0.07);
@@ -217,7 +152,7 @@ import FooterComponent from '@/components/FooterComponent.vue'
 }
 
 .team-info h3 {
-  font-size: 1.8rem;
+  font-size: 1.3rem;
   color: #24b1bb ;
 }
 
